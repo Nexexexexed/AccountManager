@@ -1,11 +1,11 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
 interface Label {
   text: string;
 }
 
-interface Account {
+export interface Account {
   id: number;
   labels: Label[];
   type: "LDAP" | "Локальная";
@@ -45,11 +45,18 @@ export const useAccountStore = defineStore("account", () => {
   }
 
   function deleteAccount(id: number): void {
-    accounts.value == accounts.value.filter((a) => a.id == id);
+    accounts.value = accounts.value.filter((a) => a.id !== id);
     saveToLocalStorage();
   }
 
   function saveToLocalStorage() {
     localStorage.setItem("accounts", JSON.stringify(accounts.value));
   }
+
+  return {
+    accounts: computed(() => accounts.value),
+    addAccount,
+    updateAccount,
+    deleteAccount,
+  };
 });
